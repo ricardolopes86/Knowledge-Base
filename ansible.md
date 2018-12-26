@@ -276,6 +276,7 @@ Check the example:
       when: upload_var == "yes"
       tags: upload
 ```
+***
 ### Resources
 
 [Ansible Inventory File](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)  
@@ -289,4 +290,7 @@ Check the example:
 [Using variables](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html)  
 [Tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html)  
 [Prompt](https://docs.ansible.com/ansible/latest/user_guide/playbooks_prompts.html)  
-[The When Statement](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#the-when-statement)
+[The When Statement](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#the-when-statement)  
+
+> From acloud-guru
+> - Brock Tubre
