@@ -253,6 +253,29 @@ $ ansible-vault edit secret-variables.yml
 ```
 Then, type the password defined for this file, then you'll be able to changes its content.
 
+Another way to encrypt data is piping a stdout file with ansible-vault command, like this:
+```
+$ cat file.txt | ansible-vault encrypt_string
+```
+
+### Prompt
+
+Useful when you need to request user input before proceeding with some ansible tasks.
+Check the example:
+```
+# setup.yml
+---
+  vars_prompt:
+    - name: "upload_var"
+      prompt: "Upload index.php?"
+  tasks:
+    - name: Upload application file
+      copy:
+        src: ../index.php
+        dest: /var/www/html
+      when: upload_var == "yes"
+      tags: upload
+```
 ### Resources
 
 [Ansible Inventory File](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)  
@@ -265,3 +288,5 @@ Then, type the password defined for this file, then you'll be able to changes it
 [Import a Playbook](https://docs.ansible.com/ansible/latest/modules/import_playbook_module.html)  
 [Using variables](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html)  
 [Tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html)  
+[Prompt](https://docs.ansible.com/ansible/latest/user_guide/playbooks_prompts.html)  
+[The When Statement](https://docs.ansible.com/ansible/latest/user_guide/playbooks_conditionals.html#the-when-statement)
