@@ -29,25 +29,25 @@ The `inventory` configuration, tells ansible to where to look for the inventory 
 ### Commands
 
 ```
-ansible -i hosts-dev --list-hosts all
+$ ansible -i hosts-dev --list-hosts all
 ```
 This command will look at inventory file hosts-dev and print the entire list of hosts managed by Ansible.
 
 ```
-ansible -i hosts-dev --list-hosts "*"
+$ ansible -i hosts-dev --list-hosts "*"
 ```
 This command works exactly as the `all`, but it uses wildcards.  
 
 ```
-ansible -i hosts-dev --list-hosts "app*"
+$ ansible -i hosts-dev --list-hosts "app*"
 ```
 Will look for all hosts starting with `app`
 ```
-ansible -i hosts-dev --list-hosts webservers:loadbalancers
+$ ansible -i hosts-dev --list-hosts webservers:loadbalancers
 ```
 Will look for all hosts in groups `webservers` and `loadbalancers`
 ```
-ansible -i hosts-dev --list-hosts \!control
+$ ansible -i hosts-dev --list-hosts \!control
 ```
 Will look for all hosts except by `control`.
 
@@ -63,7 +63,7 @@ The playbook needs to be writen in a logical step-by-step, like this:
 
 Playbooks are writen in YAML format, they are composed of one or more `plays` in a `list`. In order to run a playbook, you should issue the following command:
 ```
-ansible-playbook playbook-name.yml
+$ ansible-playbook playbook-name.yml
 ```
 Sample playbook struture:
 ```
@@ -141,9 +141,93 @@ Very useful for debuging playbooks and also to get more information about values
 Use the following command to get all the information gathering during `Gathering Facts` step:
 
 ```
-ansible -m setup ip/name_of_host
+$ ansible -m setup ip/name_of_host
+```
+### Roles
+
+Ansible provides a framework that makes each part of the variables, tasks, templates, and modules fully independent.
+* Group tasks together in a way that it is self contained;
+* Clean and pre-defined folder structure;
+* Break up the configurations into files;
+* Reuse the code by others who need similar configuration;
+* Easy to modify and reduces sintax errors.
+
+Ex of directory structure:
+```
+setup.yml
+roles/
+    webservers/
+        tasks/
+            - main.yml
+        vars/
+            - main.yml
+        handlers/
+            - main.yml
 ```
 
+How to create the folder structure using Ansible command:
+```
+$ ansible-galaxy webservers init
+```
+Ansible will create almost all of the folders, but they are optional. You can remove it if not needed.  
+
+Following the example above, a simple role would look like this:
+```
+# setup.yml
+---
+  - hosts: webservers
+    become: True
+    roles:
+      - webservers
+```
+```
+# roles/webservers/tasks/main.yml
+- name: Upload application file
+    copy:
+        src: ../index.php
+        dest: "{{path_to_app}}"
+        mode: 0755
+
+    - name: Create info page
+    copy:
+        dest: "{{path_to_app}}/info.php"
+        content: "<h1> Info about the server {{ ansible_hostname }} </h1>"
+    - name: Configure php.ini file
+    lineinfile:
+        path: /etc/php.ini
+        regexp: ^short_open_tag
+        line: 'short_open_tag=On'
+    notify: restart apache
+```
+```
+# roles/webservers/handlers/main.yml
+- name: restart apache
+    service: name=httpd state=restarted
+```
+```
+# roles/webservers/vars/main.yml
+path_to_app: /var/www/html
+```
+
+### Dry Run
+Also known as Check Mode: Reports changes tha Ansible would have to make on the end hosts rather than applying the changes.
+
+```
+$ ansible-playbook setup.yml --check
+```
+
+This is very useful for production environments, instead of applying the changes, it would only test them before applying.
+
+### Tags
+
+Assigning tags to specific tasks in playbooks allows us to only call certain tasks even in a very long playbook. Use the `tags` property on the same level as the `name` property to assign the tag.  
+
+Its possible to assign many tags to a single task, and also assign the same tag to many tasks.  
+
+To run only the tasks assigned to a specific tag:
+```
+$ ansible-playbook setup.yml --tags create
+```
 ### Resources
 
 [Ansible Inventory File](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)  
