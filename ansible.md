@@ -228,6 +228,31 @@ To run only the tasks assigned to a specific tag:
 ```
 $ ansible-playbook setup.yml --tags create
 ```
+
+### Ansible Vault
+Vault is a way to keep sensitive information in encrypted files, rather than plain text, in your playbooks.
+
+Its very useful in such situations:
+* Keep passwords, keys and sensitive variables in encrypted files;
+* You can share the vault files in your source control system;
+* Vault can encrypt pretty much any data structure file used by Ansible;
+* Password protected and the default cipher is AES.
+
+Create encrypted data file
+```
+$ ansible-vault create secret-variables.yml
+```
+In order to use any data encrypted by Vault, its necessary to run the ansible command with the following argument:
+```
+$ ansible-playbook setup.yml --ask-vault-pass
+```
+
+If you need to edit this file, issue the following command:
+```
+$ ansible-vault edit secret-variables.yml
+```
+Then, type the password defined for this file, then you'll be able to changes its content.
+
 ### Resources
 
 [Ansible Inventory File](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)  
@@ -239,3 +264,4 @@ $ ansible-playbook setup.yml --tags create
 [Handlers](https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html#handlers-running-operations-on-change)  
 [Import a Playbook](https://docs.ansible.com/ansible/latest/modules/import_playbook_module.html)  
 [Using variables](https://docs.ansible.com/ansible/latest/user_guide/playbooks_variables.html)  
+[Tags](https://docs.ansible.com/ansible/latest/user_guide/playbooks_tags.html)  
