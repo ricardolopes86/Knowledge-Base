@@ -210,7 +210,7 @@ path_to_app: /var/www/html
 ```
 
 ### Dry Run
-Also known as Check Mode: Reports changes tha Ansible would have to make on the end hosts rather than applying the changes.
+A.K.A Check Mode: Reports changes tha Ansible would have to make on the end hosts rather than applying the changes.
 
 ```
 $ ansible-playbook setup.yml --check
